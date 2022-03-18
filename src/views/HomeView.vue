@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid class="container ">
     <NavigationBar />
   </v-container>
 </template>
@@ -15,3 +15,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.container {
+  height: 100vh;
+}
+</style>
