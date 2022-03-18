@@ -14,7 +14,7 @@
         cache-items
         flat
         :items="items"
-        label="Search Your City or Country Here"
+        label="Search Your City "
         hide-details
         hide-no-data
         solo-inverted
@@ -36,7 +36,7 @@
           </v-list-item>
 
           <v-list-item>
-            <v-list-item-title>About Us</v-list-item-title>
+            <v-list-item-title @click="toAboutPage()" >About Us</v-list-item-title>
           </v-list-item>
 
           <v-list-item>
