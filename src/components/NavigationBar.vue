@@ -5,7 +5,9 @@
         class="d-sm-none"
         @click.stop="drawer = !drawer"
       ></v-app-bar-nav-icon>
-      <v-toolbar-title class="d-none d-md-block white--text">Weather App By Vox</v-toolbar-title>
+      <v-toolbar-title class="d-none d-md-block white--text"
+        >Weather App By Vox</v-toolbar-title
+      >
       <v-spacer></v-spacer>
       <v-autocomplete
         v-model="select"
@@ -36,7 +38,9 @@
           </v-list-item>
 
           <v-list-item>
-            <v-list-item-title @click="toAboutPage()" >About Us</v-list-item-title>
+            <v-list-item-title @click="toAboutPage()"
+              >About Us</v-list-item-title
+            >
           </v-list-item>
 
           <v-list-item>
@@ -49,51 +53,52 @@
 </template>
 
 <script>
-
 export default {
   name: "NavigationBar",
   data: () => ({
     drawer: false,
-    select:null,
-    search:null,
-    loading:false,
-    items:[],
-    states:[]
+    select: null,
+    search: null,
+    loading: false,
+    items: [],
+    states: [],
   }),
-   watch: {
-      search (val) {
-        val && val !== this.select && this.querySelections(val)
-      },
+  watch: {
+    search(val) {
+      val && val !== this.select && this.querySelections(val);
     },
+  },
   methods: {
     toAboutPage() {
       this.$router.push({ name: "about" });
     },
-    querySelections (v) {
-        this.loading = true
-        
-        fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${this.search}&limit=5&appid=${process.env.VUE_APP_WEATHER_API}`)
-        .then(res => res.clone().json())
-        .then(res => {
-          let allStates = [];
-          console.log(res)
-          for(let i = 0 ; i < res.length ; i++){
-              allStates.push(res[i].name+ " " +res[i].state + " " + res[i].country )
-          }
-          this.items = allStates
-        })
+    querySelections(v) {
+      this.loading = true;
 
-        // Simulated ajax query
-        setTimeout(() => {
-          this.items = this.states.filter(e => {
-            return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
-          })
-          this.loading = false
-        }, 500)
-      },
-      
+      fetch(
+        `http://api.openweathermap.org/geo/1.0/direct?q=${this.search}&limit=5&appid=${process.env.VUE_APP_WEATHER_API}`
+      )
+        .then((res) => res.clone().json())
+        .then((res) => {
+          let allStates = [];
+          console.log(res);
+          for (let i = 0; i < res.length; i++) {
+            allStates.push(
+              res[i].name + " " + res[i].state + " " + res[i].country
+            );
+          }
+          this.items = allStates;
+        });
+
+      // Simulated ajax query
+      setTimeout(() => {
+        this.items = this.states.filter((e) => {
+          return (e || "").toLowerCase().indexOf((v || "").toLowerCase()) > -1;
+        });
+        this.loading = false;
+      }, 500);
+    },
   },
-  mounted(){
-  }
+  mounted() {},
 };
 </script>

@@ -1,6 +1,7 @@
 <template>
   <v-container fluid class="container ">
     <NavigationBar />
+    {{dd}}
   </v-container>
 </template>
 
@@ -13,6 +14,11 @@ export default {
   components: {
     NavigationBar,
   },
+  data(){
+    return{
+      
+    }
+  }
 };
 </script>
 <style scoped>
