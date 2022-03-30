@@ -10,17 +10,21 @@
       >
       <v-spacer></v-spacer>
       <v-autocomplete
-        v-model="select"
+        v-model="model"
         :loading="loading"
         :search-input.sync="search"
+        return-object
+        item-value="lat"
+        item-text="name"
+        :items="states"
         cache-items
-        flat
-        :items="items"
         label="Search Your City "
         hide-details
         hide-no-data
         solo-inverted
+        clearable
         prepend-inner-icon="mdi-magnify"
+        required
       ></v-autocomplete>
       <v-spacer></v-spacer>
       <v-toolbar-items class="d-none d-md-block">
@@ -37,10 +41,8 @@
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item>
 
-          <v-list-item>
-            <v-list-item-title @click="toAboutPage()"
-              >About Us</v-list-item-title
-            >
+          <v-list-item @click="toAboutPage()">
+            <v-list-item-title>About Us</v-list-item-title>
           </v-list-item>
 
           <v-list-item>
@@ -53,52 +55,59 @@
 </template>
 
 <script>
+import datas from "../store/PublicData";
 export default {
   name: "NavigationBar",
+  props: [],
   data: () => ({
     drawer: false,
-    select: null,
+    model: null,
     search: null,
     loading: false,
-    items: [],
+    searching: null,
     states: [],
+    lastLatLon: null,
+    datas: datas,
   }),
   watch: {
     search(val) {
-      val && val !== this.select && this.querySelections(val);
+      val && val !== this.select && this.querySelections();
     },
   },
   methods: {
     toAboutPage() {
       this.$router.push({ name: "about" });
     },
-    querySelections(v) {
+    async fetchPosition() {
+      const api_key = "14476baa7dc7b943fa43681da12a198c";
+      const response = await fetch(
+        `http://api.openweathermap.org/geo/1.0/direct?q=${this.search}&limit=5&appid=${api_key}`
+      );
+      const statess = await response.json();
+      // console.log(res);
+      //check if model has passed or not
+      let names = [];
+      for (let i = 0; i < statess.length; i++) {
+        names.push({
+          name: statess[i].name + " " + statess[i].country,
+          country: statess[i].country,
+          lat: statess[i].lat,
+          lon: statess[i].lon,
+        });
+      }
+
+      this.states = names;
+      this.loading = false;
+    },
+
+    querySelections() {
       this.loading = true;
+      //fetching 5 position for dispalying in Navbar
 
-      fetch(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${this.search}&limit=5&appid=${process.env.VUE_APP_WEATHER_API}`
-      )
-        .then((res) => res.clone().json())
-        .then((res) => {
-          let allStates = [];
-          console.log(res);
-          for (let i = 0; i < res.length; i++) {
-            allStates.push(
-              res[i].name + " " + res[i].state + " " + res[i].country
-            );
-          }
-          this.items = allStates;
-        });
-
-      // Simulated ajax query
-      setTimeout(() => {
-        this.items = this.states.filter((e) => {
-          return (e || "").toLowerCase().indexOf((v || "").toLowerCase()) > -1;
-        });
-        this.loading = false;
-      }, 500);
+      this.fetchPosition();
+      const configObj = JSON.parse(JSON.stringify(this.model));
+      this.datas.select = configObj;
     },
   },
-  mounted() {},
 };
 </script>
