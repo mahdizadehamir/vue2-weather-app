@@ -79,7 +79,7 @@ export default {
       this.$router.push({ name: "about" });
     },
     async fetchPosition() {
-      const api_key = "14476baa7dc7b943fa43681da12a198c";
+      const api_key = "a3e7bdc246b811691b06aab13ccb0dbb";
       const response = await fetch(
         `http://api.openweathermap.org/geo/1.0/direct?q=${this.search}&limit=5&appid=${api_key}`
       );

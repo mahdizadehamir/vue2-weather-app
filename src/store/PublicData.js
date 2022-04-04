@@ -1,5 +1,5 @@
 const datas = {
-  select : []
+  select : {}
 }
 
 export default datas
