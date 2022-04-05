@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="container">
     <NavigationBar />
-    <WeatherInfo />
+    <WeatherInfo class="mt-7" />
   </v-container>
 </template>
 

@@ -72,7 +72,15 @@ export default {
   watch: {
     search(val) {
       val && val !== this.select && this.querySelections();
+
     },
+    "datas.select":{
+      handler(){
+        console.log('this items changed',this.datas.select)
+        localStorage.setItem('select',JSON.stringify(this.datas.select))
+      },
+      deep:true,
+    }
   },
   methods: {
     toAboutPage() {

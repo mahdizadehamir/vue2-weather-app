@@ -1,30 +1,25 @@
 <template>
   <div>
-    <div
-      v-if="
-        this.datas.select !== null &&
-        Object.keys(this.datas.select).length !== 0
-      "
-    >
-      <p>{{ timeZone }}</p>
-      <v-card class="mx-auto" max-width="400">
+    <div>
+      <v-card  class="mx-auto" max-width="400">
         <v-list-item two-line>
           <v-list-item-content>
             <v-list-item-title class="text-h5">
-              {{ this.datas.select.name }}
+              {{ locationName }}
             </v-list-item-title>
             <v-list-item-subtitle
-              >{{dayOfweek}}, {{timing}} PM, {{weatherDescription}}</v-list-item-subtitle
+              >{{ dayOfweek }}, {{ timing }},
+              {{ weatherDescription }}</v-list-item-subtitle
             >
           </v-list-item-content>
         </v-list-item>
 
         <v-card-text>
           <v-row align="center">
-            <v-col class="text-h3" cols="6"> {{ currentTemp }}&deg;C </v-col>
+            <v-col class="text-h2" cols="6"> {{ currentTemp }}&deg;C </v-col>
             <v-col cols="6">
               <v-img
-                src="https://cdn.vuetifyjs.com/images/cards/sun.png"
+                :src="weatherUrl"
                 alt="Sunny image"
                 width="92"
               ></v-img>
@@ -34,16 +29,16 @@
 
         <v-list-item>
           <v-list-item-icon>
-            <v-icon>mdi-send</v-icon>
+            <v-icon>mdi-weather-windy</v-icon>
           </v-list-item-icon>
-          <v-list-item-subtitle>23 km/h</v-list-item-subtitle>
+          <v-list-item-subtitle>{{windSpeed}} km/h</v-list-item-subtitle>
         </v-list-item>
 
         <v-list-item>
           <v-list-item-icon>
-            <v-icon>mdi-cloud-download</v-icon>
+            <v-icon>mdi-water</v-icon>
           </v-list-item-icon>
-          <v-list-item-subtitle>48%</v-list-item-subtitle>
+          <v-list-item-subtitle>{{humidity}}%</v-list-item-subtitle>
         </v-list-item>
 
         <v-slider
@@ -100,9 +95,13 @@ export default {
       },
       { day: "Thursday", icon: "mdi-cloud", temp: "25\xB0/15\xB0" },
     ],
-    dayOfweek:null,
-    weatherDescription:null,
-    timing:null
+    dayOfweek: null,
+    weatherDescription: null,
+    timing: null,
+    humidity:null,
+    windSpeed:null,
+    weatherUrl:null,
+    locationName:'California'
   }),
   watch: {
     "datas.select": {
@@ -120,9 +119,18 @@ export default {
 
   methods: {
     async weatherInfoFetch() {
+      if(localStorage.getItem("select")){
+        var locationLat = JSON.parse(localStorage.getItem("select")).lat;
+        var locationLon = JSON.parse(localStorage.getItem("select")).lon;
+        const locationName = JSON.parse(localStorage.getItem("select")).name;
+        this.locationName = locationName
+      } else {
+        locationLat = 36.778259
+        locationLon = -119.417931
+      }
       const api_key = "a3e7bdc246b811691b06aab13ccb0dbb";
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${this.datas.select.lat}&lon=${this.datas.select.lon}&exclude=hourly,minutely&appid=${api_key}&units=metric`
+        `https://api.openweathermap.org/data/2.5/onecall?lat=${locationLat}&lon=${locationLon}&exclude=hourly,minutely&appid=${api_key}&units=metric`
       );
       const weatherInfo = await response.json();
       // console.log(res);
@@ -133,13 +141,20 @@ export default {
       const thatCityTime = new Date(utc + weatherInfo.timezone_offset * 1000);
       this.timeZone = thatCityTime.toString();
       console.log(weatherInfo, this.datas.select.length);
-      this.currentTemp = weatherInfo.current.temp;
+      this.currentTemp = Math.round(weatherInfo.current.temp);
       this.dayOfweek = this.labels[thatCityTime.getDay()];
       this.weatherDescription = weatherInfo.current.weather[0].description;
-      this.timing = thatCityTime.getHours()  + ":" + thatCityTime.getMinutes();
-      console.log(typeof(this.time))
-    },
+      this.timing = thatCityTime.getHours() + ":" + thatCityTime.getMinutes();
+      this.humidity = weatherInfo.current.humidity;
+      this.windSpeed = weatherInfo.current.wind_speed;
+      this.weatherUrl = "http://openweathermap.org/img/wn/" + weatherInfo.current.weather[0].icon + "@4x.png";
+      console.log(this.weatherUrl)
+    }
+    
   },
+  mounted(){
+    this.weatherInfoFetch();
+  }
 };
 </script>
 
