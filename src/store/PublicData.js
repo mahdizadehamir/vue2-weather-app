@@ -1,5 +1,6 @@
 const datas = {
-  select : {}
+  select : {},
+  weatherType : ""
 }
 
 export default datas

@@ -1,14 +1,10 @@
 <template>
   <div>
-    <v-toolbar elevation="9" dark color="teal" outlined rounded>
+    <v-toolbar max-width="500" class="mx-auto" elevation="9"  color="grey lighten-5" outlined rounded>
       <v-app-bar-nav-icon
-        class="d-sm-none"
+        class="d-block"
         @click.stop="drawer = !drawer"
       ></v-app-bar-nav-icon>
-      <v-toolbar-title class="d-none d-md-block white--text"
-        >Weather App By Vox</v-toolbar-title
-      >
-      <v-spacer></v-spacer>
       <v-autocomplete
         v-model="model"
         :loading="loading"
@@ -26,12 +22,6 @@
         prepend-inner-icon="mdi-magnify"
         required
       ></v-autocomplete>
-      <v-spacer></v-spacer>
-      <v-toolbar-items class="d-none d-md-block">
-        <v-btn text>Home</v-btn>
-        <v-btn text @click="toAboutPage()">About</v-btn>
-        <v-btn text>Contact Us</v-btn>
-      </v-toolbar-items>
     </v-toolbar>
     <!-- //insert drawer for mobile view -->
     <v-navigation-drawer v-model="drawer" absolute bottom temporary>

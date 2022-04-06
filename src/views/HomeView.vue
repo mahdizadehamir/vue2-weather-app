@@ -1,7 +1,7 @@
 <template>
-  <v-container fluid class="container">
+  <v-container fluid class="container" :class="weatherBackground">
     <NavigationBar />
-    <WeatherInfo class="mt-7" />
+    <WeatherInfo class="mt-2" />
   </v-container>
 </template>
 
@@ -21,15 +21,50 @@ export default {
       datas: datas,
       timeZone: null,
       currentTemp: null,
+      weatherBackground: JSON.parse(localStorage.getItem("weatherBackground")) ,
     };
   },
-  methods: {
-    
+  methods: {},
+  watch: {
+    "datas.weatherType": {
+      handler: function () {
+        if (this.datas.weatherType === "Clear") {
+          this.weatherBackground = "clear";
+        } else if (this.datas.weatherType === "Rain") {
+          this.weatherBackground = "rainy";
+        } else if (this.datas.weatherType === "Clouds") {
+          this.weatherBackground = "cloudy";
+        } else if (this.datas.weatherType === "Snow") {
+          this.weatherBackground = "snowy";
+        }
+        localStorage.setItem("weatherBackground", JSON.stringify(this.weatherBackground));
+      },
+      deep: true,
+    },
   },
 };
 </script>
 <style scoped>
 .container {
-  height: 100vh;
+  height: 100%;
+  min-height: 100%;
+}
+.cloudy {
+  background-image: url("../assets/images/cloudy.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.rainy {
+  background-image: url("../assets/images/rainy.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.clear {
+  background-image: url("../assets/images/clear.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 </style>

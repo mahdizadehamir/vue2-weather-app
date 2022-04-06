@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <v-card  class="mx-auto" max-width="400">
+      <v-card  class="mx-auto" max-width="500">
         <v-list-item two-line>
           <v-list-item-content>
             <v-list-item-title class="text-h5">
@@ -101,7 +101,8 @@ export default {
     humidity:null,
     windSpeed:null,
     weatherUrl:null,
-    locationName:'California'
+    locationName:'California',
+    daily:null,
   }),
   watch: {
     "datas.select": {
@@ -119,9 +120,12 @@ export default {
 
   methods: {
     async weatherInfoFetch() {
+
+      let locationLat = null;
+      let locationLon = null;
       if(localStorage.getItem("select")){
-        var locationLat = JSON.parse(localStorage.getItem("select")).lat;
-        var locationLon = JSON.parse(localStorage.getItem("select")).lon;
+         locationLat = JSON.parse(localStorage.getItem("select")).lat;
+         locationLon = JSON.parse(localStorage.getItem("select")).lon;
         const locationName = JSON.parse(localStorage.getItem("select")).name;
         this.locationName = locationName
       } else {
@@ -140,7 +144,6 @@ export default {
       const utc = localTime + localOffset;
       const thatCityTime = new Date(utc + weatherInfo.timezone_offset * 1000);
       this.timeZone = thatCityTime.toString();
-      console.log(weatherInfo, this.datas.select.length);
       this.currentTemp = Math.round(weatherInfo.current.temp);
       this.dayOfweek = this.labels[thatCityTime.getDay()];
       this.weatherDescription = weatherInfo.current.weather[0].description;
@@ -148,7 +151,11 @@ export default {
       this.humidity = weatherInfo.current.humidity;
       this.windSpeed = weatherInfo.current.wind_speed;
       this.weatherUrl = "http://openweathermap.org/img/wn/" + weatherInfo.current.weather[0].icon + "@4x.png";
-      console.log(this.weatherUrl)
+      
+      this.daily = weatherInfo.daily;
+      this.datas.weatherType = weatherInfo.current.weather[0].main
+      console.log(this.daily , this.datas.weatherType)
+      console.log(weatherInfo)
     }
     
   },
