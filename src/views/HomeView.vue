@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="container" :class="weatherBackground">
     <NavigationBar />
-    <WeatherInfo class="mt-2" />
+    <WeatherInfo class="mt-1" />
   </v-container>
 </template>
 

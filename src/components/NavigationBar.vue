@@ -17,7 +17,7 @@
         label="Search Your City "
         hide-details
         hide-no-data
-        solo-inverted
+        solo
         clearable
         prepend-inner-icon="mdi-magnify"
         required

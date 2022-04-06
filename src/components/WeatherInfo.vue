@@ -64,10 +64,8 @@
         </v-list>
 
         <v-divider></v-divider>
-
-        <v-card-actions>
-          <v-btn text> Full Report </v-btn>
-        </v-card-actions>
+        <ForcastTab />
+        
       </v-card>
     </div>
   </div>
@@ -75,6 +73,7 @@
 
 <script>
 import datas from "@/store/PublicData";
+import ForcastTab from "@/components/ForcastTab.vue"
 export default {
   data: () => ({
     datas: datas,
@@ -104,6 +103,9 @@ export default {
     locationName:'California',
     daily:null,
   }),
+  components: {
+    ForcastTab,
+  },
   watch: {
     "datas.select": {
       handler: function () {
@@ -137,7 +139,6 @@ export default {
         `https://api.openweathermap.org/data/2.5/onecall?lat=${locationLat}&lon=${locationLon}&exclude=hourly,minutely&appid=${api_key}&units=metric`
       );
       const weatherInfo = await response.json();
-      // console.log(res);
       const d = new Date();
       const localTime = d.getTime();
       const localOffset = d.getTimezoneOffset() * 60000;
@@ -154,8 +155,7 @@ export default {
       
       this.daily = weatherInfo.daily;
       this.datas.weatherType = weatherInfo.current.weather[0].main
-      console.log(this.daily , this.datas.weatherType)
-      console.log(weatherInfo)
+      
     }
     
   },
