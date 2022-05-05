@@ -66,10 +66,10 @@ export default {
     },
     "datas.select":{
       handler(){
-        console.log('this items changed',this.datas.select)
         localStorage.setItem('select',JSON.stringify(this.datas.select))
       },
       deep:true,
+      
     }
   },
   methods: {
@@ -82,7 +82,6 @@ export default {
         `http://api.openweathermap.org/geo/1.0/direct?q=${this.search}&limit=5&appid=${api_key}`
       );
       const statess = await response.json();
-      // console.log(res);
       //check if model has passed or not
       let names = [];
       for (let i = 0; i < statess.length; i++) {

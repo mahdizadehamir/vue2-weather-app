@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <v-card  class="mx-auto" max-width="500">
+      <v-card class="mx-auto" max-width="500">
         <v-list-item two-line>
           <v-list-item-content>
             <v-list-item-title class="text-h5">
@@ -19,7 +19,7 @@
             <v-col class="text-h2" cols="6"> {{ currentTemp }}&deg;C </v-col>
             <v-col cols="6">
               <v-img
-                :src="weatherUrl"
+                :src="require(`@/assets/icons/${weatherUrl}.png`)"
                 alt="Sunny image"
                 width="92"
               ></v-img>
@@ -31,41 +31,18 @@
           <v-list-item-icon>
             <v-icon>mdi-weather-windy</v-icon>
           </v-list-item-icon>
-          <v-list-item-subtitle>{{windSpeed}} km/h</v-list-item-subtitle>
+          <v-list-item-subtitle>{{ windSpeed }} km/h</v-list-item-subtitle>
         </v-list-item>
 
         <v-list-item>
           <v-list-item-icon>
             <v-icon>mdi-water</v-icon>
           </v-list-item-icon>
-          <v-list-item-subtitle>{{humidity}}%</v-list-item-subtitle>
+          <v-list-item-subtitle>{{ humidity }}%</v-list-item-subtitle>
         </v-list-item>
 
-        <v-slider
-          v-model="time"
-          :max="6"
-          :tick-labels="labels"
-          class="mx-4"
-          ticks
-        ></v-slider>
-
-        <v-list class="transparent">
-          <v-list-item v-for="item in forecast" :key="item.day">
-            <v-list-item-title>{{ item.day }}</v-list-item-title>
-
-            <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-subtitle class="text-right">
-              {{ item.temp }}
-            </v-list-item-subtitle>
-          </v-list-item>
-        </v-list>
-
         <v-divider></v-divider>
-        <ForcastTab />
-        
+        <ForcastTab :temp="daily" :icon="'mdi-cloud'" />
       </v-card>
     </div>
   </div>
@@ -73,7 +50,7 @@
 
 <script>
 import datas from "@/store/PublicData";
-import ForcastTab from "@/components/ForcastTab.vue"
+import ForcastTab from "@/components/ForcastTab.vue";
 export default {
   data: () => ({
     datas: datas,
@@ -81,27 +58,16 @@ export default {
     timeZone: null,
     labels: ["SU", "MO", "TU", "WED", "TH", "FR", "SA"],
     time: 0,
-    forecast: [
-      {
-        day: "Tuesday",
-        icon: "mdi-white-balance-sunny",
-        temp: "24\xB0/12\xB0",
-      },
-      {
-        day: "Wednesday",
-        icon: "mdi-white-balance-sunny",
-        temp: "22\xB0/14\xB0",
-      },
-      { day: "Thursday", icon: "mdi-cloud", temp: "25\xB0/15\xB0" },
-    ],
     dayOfweek: null,
     weatherDescription: null,
     timing: null,
-    humidity:null,
-    windSpeed:null,
-    weatherUrl:null,
-    locationName:'California',
-    daily:null,
+    humidity: null,
+    windSpeed: null,
+    weatherUrl: 'clear',
+    locationName: "California",
+    daily: null,
+    days:null,
+    forcastIcon:null,
   }),
   components: {
     ForcastTab,
@@ -122,17 +88,17 @@ export default {
 
   methods: {
     async weatherInfoFetch() {
-
       let locationLat = null;
       let locationLon = null;
-      if(localStorage.getItem("select")){
-         locationLat = JSON.parse(localStorage.getItem("select")).lat;
-         locationLon = JSON.parse(localStorage.getItem("select")).lon;
+      if (localStorage.getItem("select")) {
+        locationLat = JSON.parse(localStorage.getItem("select")).lat;
+        locationLon = JSON.parse(localStorage.getItem("select")).lon;
         const locationName = JSON.parse(localStorage.getItem("select")).name;
-        this.locationName = locationName
+        this.locationName = locationName;
       } else {
-        locationLat = 36.778259
-        locationLon = -119.417931
+        locationLat = 36.778259;
+        locationLon = -119.417931;
+
       }
       const api_key = "a3e7bdc246b811691b06aab13ccb0dbb";
       const response = await fetch(
@@ -151,17 +117,38 @@ export default {
       this.timing = thatCityTime.getHours() + ":" + thatCityTime.getMinutes();
       this.humidity = weatherInfo.current.humidity;
       this.windSpeed = weatherInfo.current.wind_speed;
-      this.weatherUrl = "http://openweathermap.org/img/wn/" + weatherInfo.current.weather[0].icon + "@4x.png";
-      
+      this.weatherUrl = weatherInfo.current.weather[0].main
       this.daily = weatherInfo.daily;
-      this.datas.weatherType = weatherInfo.current.weather[0].main
-      
-    }
-    
+      this.datas.weatherType = weatherInfo.current.weather[0].main;
+      if (this.datas.weatherType === "Clouds") {
+        this.weatherUrl = 'clouds';
+        this.forcastIcon = 'mdi-cloud';
+      }
+      else if (this.datas.weatherType === "Clear") {
+        this.weatherUrl = 'clear';
+      }
+      else if(this.datas.weatherType === "Rain"){
+        this.weatherUrl = 'rain';
+      }
+      else if(this.datas.weatherType === "Snow"){
+        this.weatherUrl = 'snow';
+      }
+      else if(this.datas.weatherType === "Thunderstorm"){
+        this.weatherUrl = 'thunderstorm';
+      }
+      else if(this.datas.weatherType === "Drizzle"){
+        this.weatherUrl = 'drizzle';
+      }
+      else if(this.datas.weatherType === "Haze"){
+        this.weatherUrl = 'haze';
+      }
+
+      console.log(this.daily);
+    },
   },
-  mounted(){
+  mounted() {
     this.weatherInfoFetch();
-  }
+  },
 };
 </script>
 
