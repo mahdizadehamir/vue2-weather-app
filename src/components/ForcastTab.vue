@@ -14,11 +14,12 @@
       <v-tab-item>
         <v-card flat>
           <v-card-text>
-            <v-list class="d-inline-flex justify-start ">
+            <v-list>
+              <div class="d-flex flex-row flex-wrap box">
               <v-list-item
-                v-for="item in temp"
+                v-for="(item) in temp"
                 :key="temp.indexOf(item)"
-                class="d-flex flex-column justify-center align-center"
+                class="d-inline-flex flex-column justify-center align-center"
               >
                 <v-list-item-icon class="text-center align-self-center mx-0 my-0">
                   <v-img
@@ -30,11 +31,14 @@
                     alt="icon"
                   ></v-img>
                 </v-list-item-icon>
-                <v-list-item-subtitle class="align-self-center">
+                <v-list-item-subtitle class="d-inline align-self-center">
+                  
                   {{ Math.round(item.temp.min) }} /
                   {{ Math.round(item.temp.max) }} &deg;C
+                  
                 </v-list-item-subtitle>
               </v-list-item>
+              </div>
             </v-list>
           </v-card-text>
         </v-card>
@@ -94,11 +98,15 @@ export default {
     return {
       tabs: null,
       text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      item: ["7 DAYS", "HOURLY", "PAST 5 DAYS"],
+      item: ["8 DAYS", "HOURLY", "PAST 5 DAYS"],
     };
   },
   props: ["temp"],
 };
 </script>
 
-<style></style>
+<style scoped>
+  .box > *{
+flex: 1 1 160px;  }
+
+</style>
