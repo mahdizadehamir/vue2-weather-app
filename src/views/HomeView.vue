@@ -68,6 +68,12 @@ export default {
   background-position: center;
   background-repeat: no-repeat;
 }
+.snowy{
+  background-image: url("../assets/images/snowy.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 body{
   margin:0
 }
