@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="container" :class="weatherBackground">
+  <v-container fluid class="container" :class="weatherBackground" >
     <NavigationBar />
     <WeatherInfo class="mt-1" />
   </v-container>
@@ -44,10 +44,11 @@ export default {
   },
 };
 </script>
-<style scoped>
+
+<style  >
 .container {
   height: 100%;
-  min-height: 100%;
+  box-sizing: border-box;
 }
 .cloudy {
   background-image: url("../assets/images/cloudy.jpg");
@@ -57,7 +58,7 @@ export default {
 }
 .rainy {
   background-image: url("../assets/images/rainy.jpg");
-  background-size: 100vw 100vh;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -66,5 +67,8 @@ export default {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+body{
+  margin:0
 }
 </style>
