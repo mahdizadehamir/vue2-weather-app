@@ -57,7 +57,7 @@ export default {
 }
 .rainy {
   background-image: url("../assets/images/rainy.jpg");
-  background-size: cover;
+  background-size: 100vw 100vh;
   background-position: center;
   background-repeat: no-repeat;
 }

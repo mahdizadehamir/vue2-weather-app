@@ -42,7 +42,7 @@
         </v-list-item>
 
         <v-divider></v-divider>
-        <ForcastTab :temp="daily" :icon="'mdi-cloud'" />
+        <ForcastTab :temp="daily" :hourly="hourly" :timer="cityTime" :icon="'mdi-cloud'" />
       </v-card>
     </div>
   </div>
@@ -68,6 +68,8 @@ export default {
     daily: null,
     days:null,
     forcastIcon:null,
+    hourly:[],
+    cityTime:null,
   }),
   components: {
     ForcastTab,
@@ -100,9 +102,9 @@ export default {
         locationLon = -119.417931;
 
       }
-      const api_key = "a3e7bdc246b811691b06aab13ccb0dbb";
+      const api_key = "14476baa7dc7b943fa43681da12a198c";
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${locationLat}&lon=${locationLon}&exclude=hourly,minutely&appid=${api_key}&units=metric`
+        `https://api.openweathermap.org/data/2.5/onecall?lat=${locationLat}&lon=${locationLon}&exclude=minutely&appid=${api_key}&units=metric`
       );
       const weatherInfo = await response.json();
       const d = new Date();
@@ -110,15 +112,17 @@ export default {
       const localOffset = d.getTimezoneOffset() * 60000;
       const utc = localTime + localOffset;
       const thatCityTime = new Date(utc + weatherInfo.timezone_offset * 1000);
+      this.cityTime = thatCityTime;
       this.timeZone = thatCityTime.toString();
       this.currentTemp = Math.round(weatherInfo.current.temp);
       this.dayOfweek = this.labels[thatCityTime.getDay()];
       this.weatherDescription = weatherInfo.current.weather[0].description;
-      this.timing = thatCityTime.getHours() + ":" + thatCityTime.getMinutes();
+      this.timing = thatCityTime.getHours() + ":" + String(thatCityTime.getMinutes()).padStart(2, '0');
       this.humidity = weatherInfo.current.humidity;
       this.windSpeed = weatherInfo.current.wind_speed;
       this.weatherUrl = weatherInfo.current.weather[0].main
       this.daily = weatherInfo.daily;
+      this.hourly = weatherInfo.hourly;
       this.datas.weatherType = weatherInfo.current.weather[0].main;
       if (this.datas.weatherType === "Clouds") {
         this.weatherUrl = 'clouds';
@@ -143,7 +147,7 @@ export default {
         this.weatherUrl = 'haze';
       }
 
-      console.log(this.daily);
+      console.log(weatherInfo);
     },
   },
   mounted() {
